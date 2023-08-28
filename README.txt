@@ -4,3 +4,4 @@ Una empresa que tiene alrededor de 4000 empleados tiene una tasa de retiros de a
 2.	El trabajo del área de selección se aumenta y por lo tanto implica tener un área de mayor tamaño para el reclutamiento de las personas que se van.
 3.	Los empleados que permanecen tienen que trabajar más para cubrir las labores de las personas que se retiran y para la capacitación de las nuevas que llegan.
 4.	El conocimiento que tenían las personas y su experiencia se pierde y, debido a esto, el tiempo para ejecutar procesos aumenta.
+.
