@@ -104,3 +104,59 @@ dfa.attrition =dfa.attrition.fillna("No")
 dfa
 
 # Unión bases de datos
+# Unir las bases de datos por medio de key:
+data_frames =[dfa, dfg, dfe, dfsd, dftw]
+
+df = reduce(lambda  left,right: pd.merge(left,right,on=['employeeid'],
+                                            how='outer'), data_frames)
+
+pd.DataFrame.to_csv(df, 'merged.txt', sep=',', na_rep='.', index=False)
+
+df
+
+#tamaño de la base de datos
+df.shape
+
+#categoria y cantidad de datos no nulos por varible de inf general
+df.info()
+
+# Conversión de variables categóricas que aparentemente son numéricas
+df.education = df['education'].astype(str)
+df.joblevel = df['joblevel'].astype(str)
+df.stockoptionlevel = df['stockoptionlevel'].astype(str)
+df.jobinvolvement = df['jobinvolvement'].astype(str)
+df.performancerating = df['performancerating'].astype(str)
+
+df.info()
+
+# Variables cualitativas nominales
+print("Attrition: ", df['attrition'].unique())
+print("Businesstravel: ", df['businesstravel'].unique())
+print("Department: ", df['department'].unique())
+print("Educationfield: ", df['educationfield'].unique())
+print("Gender: ", df['gender'].unique())
+print("Jobrole: ", df['jobrole'].unique())
+print("Maritalstatus: ", df['maritalstatus'].unique())
+print("Over18: ", df['over18'].unique())
+
+#Variables cualitativas ordinales/categóricas
+print("Education: ", df['education'].unique())
+print("EnvironmentSatisfaction: ", df['environmentsatisfaction'].unique())
+print("JobInvolvement: ", df['jobinvolvement'].unique())
+print("JobSatisfaction: ", df['jobsatisfaction'].unique())
+print("JobLevel: ", df['joblevel'].unique())
+print("PerformanceRating: ", df['performancerating'].unique())
+print("WorkLifeBalance: ", df['worklifebalance'].unique())
+
+#cantidad de nulos de inf general
+df.isnull().sum()
+
+# En la base de datos, existen 5 variables con datos nulos:
+
+# Numcompaniesworked: 19 nulos
+# Environmentsatisfaction: 25 nulos
+# Jobsatisfaction: 20 nulos
+# Worklifebalance: 38 nulos
+# Para hacer la imputación de los datos nulos en las variables numéricas (numcompaniesworked, mean_time) se hace una exploración estadística para identificar la existencia de valores atípicos.
+
+# Para la imputación de datos nulos en las variables cualitativas (environmentsatisfaction, jobsatisfaction, worklifebalance) se usa la moda, es decir, el valor que más se repite en la muestra, para completar los datos faltantes.
