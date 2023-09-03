@@ -82,3 +82,25 @@ dftw = pd.DataFrame()
 dftw.insert(0, 'employeeid', dft1["Unnamed: 0"])
 dftw.insert(1, 'mean_time', dft1["mean_time"])
 dftw
+
+# Cambiar los nombres de las variables a letra minuscula
+dfg.columns = dfg.columns.map(str.lower)
+dfe.columns = dfe.columns.map(str.lower)
+dfsd.columns = dfsd.columns.map(str.lower)
+dftw.columns = dftw.columns.map(str.lower)
+dfr.columns = dfr.columns.map(str.lower)
+
+# Tratamiento de la base de datos de retiros
+dfr1 = pd.DataFrame()
+dfr1.insert(0, 'employeeid', value=[i for i in range(1,4411)])
+
+data_frames0 =[dfr1, dfr.iloc[:,0:2]]
+
+dfa = reduce(lambda  left,right: pd.merge(left,right,on=['employeeid'],
+                                            how='outer'), data_frames0)
+
+dfa.sort_values('employeeid', inplace=True)
+dfa.attrition =dfa.attrition.fillna("No")
+dfa
+
+# Unión bases de datos
