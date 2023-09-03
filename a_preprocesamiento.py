@@ -160,3 +160,35 @@ df.isnull().sum()
 # Para hacer la imputación de los datos nulos en las variables numéricas (numcompaniesworked, mean_time) se hace una exploración estadística para identificar la existencia de valores atípicos.
 
 # Para la imputación de datos nulos en las variables cualitativas (environmentsatisfaction, jobsatisfaction, worklifebalance) se usa la moda, es decir, el valor que más se repite en la muestra, para completar los datos faltantes.
+
+# Identificación de valores atípicos en variables numcompaniesworked
+#Tamaño de las figuras
+plt.figure(figsize=(10, 6))
+#Posición de figura 1 (fila, columna, indice)
+#plt.subplot(1,1,1)
+#Boxplot de la variable numcompaniesworked
+df['numcompaniesworked'].plot(kind='box')
+plt.title('Boxplot numcompaniesworked')
+plt.show()
+
+# En el diagrama de cajas y bigotes de las variables numéricas que contienen datos faltantes, se observa la existencia de datos por encima de 1.5 veces el rango intercuartílico (RIC), lo que indica la presencia de valores atípicos. Por tal motivo, se hace la imputación de datos a través de la mediana.
+# Imputación de datos en valores ausentes con sklearn
+df1 = df.copy()
+
+# Definir imputer para variables numéricas
+imp_num = SimpleImputer(strategy='median')
+imp_num.fit(df1.iloc[:, [0,2,5,8,13,14,16,17,19,20,21,22,23,29]])
+df1.iloc[:, [0,2,5,8,13,14,16,17,19,20,21,22,23,29]] = imp_num.transform(df1.iloc[:, [0,2,5,8,13,14,16,17,19,20,21,22,23,29]])
+
+# Definir imputer para variables categóricas
+imp_cat = SimpleImputer(strategy='most_frequent')
+df1["environmentsatisfaction"] = imp_cat.fit_transform(df1["environmentsatisfaction"].values.reshape(-1, 1))
+df1["jobsatisfaction"] = imp_cat.fit_transform(df1["jobsatisfaction"].values.reshape(-1, 1))
+df1["worklifebalance"] = imp_cat.fit_transform(df1["worklifebalance"].values.reshape(-1, 1))
+print(df1.isnull().sum())
+
+df1.head(5)
+
+df1.environmentsatisfaction = df1['environmentsatisfaction'].astype(str)
+df1.jobsatisfaction = df1['jobsatisfaction'].astype(str)
+df1.worklifebalance = df1['worklifebalance'].astype(str)
