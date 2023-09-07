@@ -1,30 +1,15 @@
-###importar librerias
+# Importar librerias necesarias para el procesamiento
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-import sklearn
-from sklearn.linear_model import LinearRegression, LogisticRegression, Ridge, RidgeCV, Lasso
 from functools import reduce
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-%matplotlib inline
-from sklearn import tree
-from sklearn import metrics
-from sklearn.tree import plot_tree
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import GradientBoostingClassifier
-from xgboost import XGBClassifier
-from sklearn.model_selection import RandomizedSearchCV
 
 # Evitar salidas de Warnings
 import warnings
 warnings.filterwarnings("ignore")
 
-####lectura de datos
+# Lectura de las bases de datos
 employee = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/employee_survey_data.csv'
 general = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/general_data.csv'
 manager = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/manager_survey_data.csv'
@@ -39,7 +24,7 @@ dfr =pd.read_csv((retirement), sep=';')
 dfit= pd.read_csv((intime), sep=',')
 dfot  = pd.read_csv((outime), sep=',')
 
-#verificar que las bases se hayan cargado de forma correcta
+# Verificar que las bases se hayan cargado de forma correcta
 dfe.head(5)
 dfg.head(5) 
 dfsd.head(5) 
@@ -59,7 +44,7 @@ dfot1.iloc[:,1:262]  = dfot1.iloc[:,1:262] .astype('datetime64[ns]')
 dfit1.sort_values('Unnamed: 0', inplace=True)
 dfot1.sort_values('Unnamed: 0', inplace=True)
 
-# Restar hora de salida y hora de entrada - Jornada laboral
+# Restar hora de salida y hora de entrada -> Jornada laboral
 dft1 = dfot1.iloc[:,1:262].sub(dfit1.iloc[:,1:262])
 dft1.insert(0, 'Unnamed: 0', dfit1["Unnamed: 0"])
 
@@ -71,7 +56,7 @@ for i in range(0,4410):
     k=k+1
   i=i+1
 
-# Sacar el promedio de horas que labora cada empleado
+# Establecer el promedio de horas que labora cada empleado
 dft1["mean_time"]=''
 for i in range(0,4410):
   dft1['mean_time'][i] = np.nanmean(dft1.iloc[i,1:262])
@@ -83,7 +68,7 @@ dftw.insert(0, 'employeeid', dft1["Unnamed: 0"])
 dftw.insert(1, 'mean_time', dft1["mean_time"])
 dftw
 
-# Cambiar los nombres de las variables a letra minuscula
+# Cambiar los nombres de las variables a letra minúscula
 dfg.columns = dfg.columns.map(str.lower)
 dfe.columns = dfe.columns.map(str.lower)
 dfsd.columns = dfsd.columns.map(str.lower)
@@ -112,12 +97,12 @@ df = reduce(lambda  left,right: pd.merge(left,right,on=['employeeid'],
 
 pd.DataFrame.to_csv(df, 'merged.txt', sep=',', na_rep='.', index=False)
 
-df
+df.head()
 
-#tamaño de la base de datos
+# Tamaño de la base de datos
 df.shape
 
-#categoria y cantidad de datos no nulos por varible de inf general
+# Categoria y cantidad de datos no nulos por varible de información general
 df.info()
 
 # Conversión de variables categóricas que aparentemente son numéricas
@@ -151,22 +136,19 @@ print("WorkLifeBalance: ", df['worklifebalance'].unique())
 #cantidad de nulos de inf general
 df.isnull().sum()
 
-# En la base de datos, existen 5 variables con datos nulos:
+# En la base de datos, existen cuatro variables con datos nulos:
 
 # Numcompaniesworked: 19 nulos
 # Environmentsatisfaction: 25 nulos
 # Jobsatisfaction: 20 nulos
 # Worklifebalance: 38 nulos
-# Para hacer la imputación de los datos nulos en las variables numéricas (numcompaniesworked, mean_time) se hace una exploración estadística para identificar la existencia de valores atípicos.
 
+# Para hacer la imputación de los datos nulos en las variables numéricas (numcompaniesworked) se hace una exploración estadística para identificar la existencia de valores atípicos.
 # Para la imputación de datos nulos en las variables cualitativas (environmentsatisfaction, jobsatisfaction, worklifebalance) se usa la moda, es decir, el valor que más se repite en la muestra, para completar los datos faltantes.
 
 # Identificación de valores atípicos en variables numcompaniesworked
-#Tamaño de las figuras
+# Tamaño de las figuras
 plt.figure(figsize=(10, 6))
-#Posición de figura 1 (fila, columna, indice)
-#plt.subplot(1,1,1)
-#Boxplot de la variable numcompaniesworked
 df['numcompaniesworked'].plot(kind='box')
 plt.title('Boxplot numcompaniesworked')
 plt.show()
@@ -189,6 +171,10 @@ print(df1.isnull().sum())
 
 df1.head(5)
 
+# Cambiar tipo de variables
 df1.environmentsatisfaction = df1['environmentsatisfaction'].astype(str)
 df1.jobsatisfaction = df1['jobsatisfaction'].astype(str)
 df1.worklifebalance = df1['worklifebalance'].astype(str)
+
+# Exportar base de datos final
+df1.to_csv("df1.csv")
