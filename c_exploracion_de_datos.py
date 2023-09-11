@@ -71,3 +71,161 @@ dfnum['distancefromhome'].plot(kind='box')
 plt.title('Boxplot - distancefromhome')
 
 plt.show()
+
+# Visualización variables numéricas
+# Monthlyincome
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.monthlyincome,50)
+plt.xlabel('monthlyincome')
+plt.title('Histograma - monthlyincome')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "monthlyincome", data = dfnum)
+plt.xlabel('Monthlyincome')
+plt.title('Distribución - monthlyincome')
+
+plt.subplot(1,3,3)
+dfnum['monthlyincome'].plot(kind='box')
+plt.title('Boxplot - monthlyincome')
+
+plt.show()
+
+# Visualización variables numéricas
+# Numcompaniesworked
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.numcompaniesworked,20)
+plt.xlabel('numcompaniesworked')
+plt.title('Histograma - numcompaniesworked')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "numcompaniesworked", data = dfnum)
+plt.xlabel('Numcompaniesworked')
+plt.title('Distribución - numcompaniesworked')
+
+plt.subplot(1,3,3)
+dfnum['numcompaniesworked'].plot(kind='box')
+plt.title('Boxplot - numcompaniesworked')
+
+plt.show()
+
+# Visualización variables numéricas
+# Percentsalaryhike
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.percentsalaryhike,30)
+plt.xlabel('percentsalaryhike')
+plt.title('Histograma - percentsalaryhike')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "percentsalaryhike", data = dfnum)
+plt.xlabel('Percentsalaryhike')
+plt.title('Distribución - percentsalaryhike')
+
+plt.subplot(1,3,3)
+dfnum['percentsalaryhike'].plot(kind='box')
+plt.title('Boxplot - percentsalaryhike')
+
+plt.show()
+
+# Visualización variables numéricas
+# Totalworkingyears
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.totalworkingyears,30)
+plt.xlabel('totalworkingyears')
+plt.title('Histograma - totalworkingyears')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "totalworkingyears", data = dfnum)
+plt.xlabel('Totalworkingyears')
+plt.title('Distribución - totalworkingyears')
+
+plt.subplot(1,3,3)
+dfnum['totalworkingyears'].plot(kind='box')
+plt.title('Boxplot - totalworkingyears')
+
+plt.show()
+
+# Visualización variables numéricas
+# Trainingtimeslastyear
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.trainingtimeslastyear,30)
+plt.xlabel('trainingtimeslastyear')
+plt.title('Histograma - trainingtimeslastyear')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "trainingtimeslastyear", data = dfnum)
+plt.xlabel('Trainingtimeslastyear')
+plt.title('Distribución - trainingtimeslastyear')
+
+plt.subplot(1,3,3)
+dfnum['trainingtimeslastyear'].plot(kind='box')
+plt.title('Boxplot - trainingtimeslastyear')
+
+plt.show()
+
+# Visualización variables numéricas
+# Yearsatcompany
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.yearsatcompany,40)
+plt.xlabel('yearsatcompany')
+plt.title('Histograma - yearsatcompany')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "yearsatcompany", data = dfnum)
+plt.xlabel('Yearsatcompany')
+plt.title('Distribución - yearsatcompany')
+
+plt.subplot(1,3,3)
+dfnum['yearsatcompany'].plot(kind='box')
+plt.title('Boxplot - yearsatcompany')
+
+plt.show()
+
+# Visualización variables numéricas
+# Yearssincelastpromotion
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.yearssincelastpromotion,30)
+plt.xlabel('yearssincelastpromotion')
+plt.title('Histograma - yearssincelastpromotion')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "yearssincelastpromotion", data = dfnum)
+plt.xlabel('Yearssincelastpromotion')
+plt.title('Distribución - yearssincelastpromotion')
+
+plt.subplot(1,3,3)
+dfnum['yearssincelastpromotion'].plot(kind='box')
+plt.title('Boxplot - yearssincelastpromotion')
+plt.show()
+
+# Visualización variables numéricas
+# Yearswithcurrmanager
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.yearswithcurrmanager,30)
+plt.xlabel('yearswithcurrmanager')
+plt.title('Histograma - yearswithcurrmanager')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "yearswithcurrmanager", data = dfnum)
+plt.xlabel('Yearswithcurrmanager')
+plt.title('Distribución - yearswithcurrmanager')
+
+plt.subplot(1,3,3)
+dfnum['yearswithcurrmanager'].plot(kind='box')
+plt.title('Boxplot - yearswithcurrmanager')
+plt.show()
