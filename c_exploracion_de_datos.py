@@ -262,3 +262,93 @@ plt.show()
 # Yearswithcurrmanager
 # Mean_time
 
+# Análisis de colinealidad - Correlación entre variables numéricas independientes
+# Obtener matriz de correlación (coeficiente de correlación de pearson) para las variables numéricas
+dfnum.drop(["employeecount","standardhours","employeeid"], axis = 1, inplace = True)
+corr_df = dfnum.corr(method='pearson')
+
+plt.figure(figsize=(20, 10))
+sns.heatmap(corr_df, annot=True)
+plt.title("Correlación entre variables numéricas")
+plt.show()
+
+# En la gráfica se evidencia problemas de colinealidad con los pares de variables:
+
+# yearsatcompany y yearswithcurrmanager
+# totalworkinyears y age
+# Por lo tanto, es necesario seleccionar entre los pares, la variable más significativa para predecir la variable objetivo.
+
+#Visualización de las variables categóricas nominales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(df1.businesstravel,10)
+plt.xlabel('Businesstravel')
+
+plt.subplot(1,3,2)
+plt.hist(df1.department,10)
+plt.xlabel('Department')
+
+plt.subplot(1,3,3)
+plt.hist(df1.educationfield, 15)
+plt.xlabel('Educationfield')
+
+plt.show()
+
+# Mayoritariamente los empleados viajan rara vez por cuestiones laborales
+# Se evidencia que el departamento con más número de empleados es R&D y el menor es human resources
+# Aproximadamente 1.750 empleados tienen educación en ciencias de la vida, la cual es más repetitiva entre los empleados. Seguida por medicina, alrededor de 1.300 empleados tienen conocimientos en este campo de la educación. por otra parte, los recursos humanos son el campo con menos número de empleados en este conocimiento
+
+#Visualización de las variables categóricas nominales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(df1.gender,10)
+plt.xlabel('Gender')
+
+plt.subplot(1,3,2)
+plt.hist(df1.maritalstatus,10)
+plt.xlabel('Maritalstatus')
+
+plt.subplot(1,3,3)
+plt.hist(df1.over18, 10)
+plt.xlabel('Over18')
+
+plt.show()
+
+# Se evidencia que en la empresa la mayoria de los empleados son de género masculino con un total de aproximadamente 3.000 personas, y el del género femenino hay un aproximado de 1.800 personas
+# Se puede observar que aproximadamente 2.000 empleados son casados, que 1.300 empleados son solteros y alrededor de 1.000 empleados son divorciados
+# Se evidencia que todos los empleados de la base de datos son mayores de 18 años, por lo tanto, la variable no es significativa para el modelo de predicción requerido.
+
+#Visualización de las variables categóricas nominales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,2,1)
+plt.hist(df1.stockoptionlevel,10)
+plt.xlabel('Stockoptionlevel')
+
+plt.subplot(1,2,2)
+plt.hist(df1.worklifebalance,10)
+plt.xlabel('Worklifebalance')
+
+plt.show()
+
+# Se evidencia que la mayoría de empleados tienen un nivel muy bueno de conciliación de la vida laboral y familiar.
+
+#Visualización de las variables categóricas nominales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,1,1)
+plt.hist(df1.jobrole, 30)
+plt.xlabel('jobrole')
+
+plt.show()
+
+# Los roles dentro de la empresa se encuentran organizados de la siguiente manera:
+
+# Hay aproximadamente 1.000 empleados dedicados a "Sales Executive"
+# En el área de Research scientist hay 900 empleados aproximadamente
+# En el laboratory technician hay alrededor de 800 empleados
+# En manufacturing director y healhcare representative hay 400 empleados
+# En los cargos más estratégicos hay alrededor de 150 empleados en cada una de las áreas
+
