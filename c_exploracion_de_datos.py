@@ -356,3 +356,72 @@ plt.show()
 # En manufacturing director y healhcare representative hay 400 empleados
 # En los cargos más estratégicos hay alrededor de 150 empleados en cada una de las áreas
 
+#Visualización de variables categóricas ordinales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1) #df_real.attrition = df_real['attrition'].astype(int)
+edu = df1['education']. astype(float)
+plt.hist(edu, 10,color="purple")
+plt.xlabel('Education - 1:No universitario, 2:Universitatio, 3:Licenciado, 4:Máster, 5:Doctor')
+
+plt.subplot(1,3,2)
+environ = df1['environmentsatisfaction']. astype(float)
+plt.hist(environ,10, color="purple")
+plt.xlabel('Environmentsatisfaction - 1:Bajo, 2:Medio, 3:Alto, 4:Muy alto')
+
+plt.subplot(1,3,3)
+jobin = df1['jobinvolvement']. astype(float)
+plt.hist(df1.jobinvolvement,10, color="purple")
+plt.xlabel('Jobinvolvement - 1:Bajo, 2:Medio, 3:Alto, 4:Muy alto')
+
+plt.show()
+
+# Los gráficos anteriores puntuan cada uno de los aspectos importantes en la vida del empleado:
+
+# Se encuentra que los empleados en su mayoría tienen una educación en un nivel 3 que puede ser el promedio.
+# El grado de satisfacción con el ambiente laboral puede ser considerado bueno, pues las puntuaciones más altas giran alrededor de 3 y 4
+# Se puede decir que los trabajadores se encuentran medianamente involucrados con sus trabajos
+
+#Visualización de variables categóricas ordinales
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,4,1)
+jobs = df1['jobsatisfaction']. astype(float)
+plt.hist(jobs, 10, color="purple")
+plt.xlabel('Jobsatisfaction - 1:Bajo, 2:Medio, 3:Alto, 4:Muy alto')
+
+plt.subplot(1,4,2)
+jobl = df1['joblevel']. astype(float)
+plt.hist(jobl,10, color="purple")
+plt.xlabel('Joblevel')
+
+plt.subplot(1,4,3)
+perf = df1['performancerating']. astype(float)
+plt.hist(perf,10, color="purple")
+plt.xlabel('Performancerating - 1:Bajo, 2:Bueno, 3:Excelente, 4:Sobresaliente')
+
+plt.subplot(1,4,4)
+wok = df1['worklifebalance']. astype(float)
+plt.hist(wok,10, color="purple")
+plt.xlabel('worklifebalance - 1:Mala, 2:Buena, 3:Muy buena, 4:La mejor')
+
+plt.show()
+
+# se puede observar que:
+
+# los empleados tienen un nivel alto y muy alto con respecto a la satisfaccion con rspecto a su trabajo
+# La mayoria de los trabajadores se encuentran en el nivel 1 y nivel 2 en la organizacion, se puede deducir que los mandos operativos son el grueso de esta población.
+# La valoracion repecto a su desempeño es en general muy buena, no hay empleados puntuados por debajo de 3
+# la gran mayoria de los empleados sienten que hay un nivel muy bueno con la conciliacion entre su trabajo y su vida personal, es decir que tienen un balancen demasiado bueno
+
+# Visualización de la variable objetivo
+plt.figure(figsize=(10, 6))
+
+plt.subplot(1,1,1)
+plt.hist(df1.attrition,10)
+plt.xlabel('Target: Attrition')
+
+plt.show()
+
+# La variable objetivo tiene un desbalance en la cantidad de muestras positivas y negativas. Se evidencia una cantidad mayoritaria de datos negativos, lo que puede generar sesgos en el modelo de predicción debido a que el modelo de entrenamiento no tendrá las muestras positivas necesarias para acertar en la predicción. Por lo tanto, se hace necesario integrar un hiperparámetro para intentar equilibrar el desempeño del modelo.
+
