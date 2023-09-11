@@ -425,3 +425,32 @@ plt.show()
 
 # La variable objetivo tiene un desbalance en la cantidad de muestras positivas y negativas. Se evidencia una cantidad mayoritaria de datos negativos, lo que puede generar sesgos en el modelo de predicción debido a que el modelo de entrenamiento no tendrá las muestras positivas necesarias para acertar en la predicción. Por lo tanto, se hace necesario integrar un hiperparámetro para intentar equilibrar el desempeño del modelo.
 
+# Se renombran las categorias de la variable respuesta
+df1['attrition'] = df1['attrition'].map( {'Yes':'1', 'No':'0'} ).fillna(df1['attrition'])
+atr = df1['attrition']
+df1.head(3)
+
+# Se hace copia al data set anterior
+df2=df1.copy()
+
+# Eliminación de columna atrition
+# esta sera anexada luego, para poder hacer las demas variables dummies
+df2.drop("attrition", axis = 1, inplace = True)
+
+# eliminar variables que no representan importancia en el data frame
+df2.drop("employeecount", axis = 1, inplace = True)
+df2.drop("employeeid", axis = 1, inplace = True)
+df2.drop("over18", axis = 1, inplace = True)
+df2.drop("standardhours", axis = 1, inplace = True)
+
+# Se convierten las variables a dummies
+df2=pd.get_dummies(df2)
+df2.head(2)
+
+# Se vuelve a poner nuestra variable objetivo
+df_real = pd.concat([atr,df2], axis=1)
+df_real.attrition = df_real['attrition'].astype(int)
+df_real.info()
+
+# Exportar base de datos 
+df_real.to_csv("df_real.csv")
