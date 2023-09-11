@@ -229,3 +229,36 @@ plt.subplot(1,3,3)
 dfnum['yearswithcurrmanager'].plot(kind='box')
 plt.title('Boxplot - yearswithcurrmanager')
 plt.show()
+
+# Visualización variables numéricas
+# Mean_time
+plt.figure(figsize=(30, 6))
+
+plt.subplot(1,3,1)
+plt.hist(dfnum.mean_time,50)
+plt.xlabel('mean_time')
+plt.title('Histograma - mean_time')
+
+plt.subplot(1,3,2)
+sns.kdeplot(x = "mean_time", data = dfnum)
+plt.xlabel('Mean_time')
+plt.title('Distribución - mean_time')
+
+plt.subplot(1,3,3)
+dfnum['mean_time'].plot(kind='box')
+plt.title('Boxplot - mean_time')
+plt.show()
+
+# En las variables numéricas, se evidencia una variabilidad significativa. No obstante, en la mayoría de variables excepto en la variable Age, se presentan asimetrías positivas, lo cual indica una tendencia de los datos a ser mayor que la media de la distribución, esto puede inducir a sesgos. Así, puede considerarse realizar transformaciones matemáticas como la logaritmica para disminuir el sesgo y posiblemente, obtener mejores resultados.
+
+# Por otro lado, se evidencian valores atípicos en las siguientes variables:
+
+# Monthlyincome
+# Numcompaniesworked
+# Totalworkingyears
+# Trainingtimeslastyear
+# Yearsatcompany
+# Yearssincelastpromotion
+# Yearswithcurrmanager
+# Mean_time
+
