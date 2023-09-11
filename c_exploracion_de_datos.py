@@ -4,13 +4,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from functools import reduce
 from sklearn.impute import SimpleImputer
+import seaborn as sns
 
 # Evitar salidas de Warnings
 import warnings
 warnings.filterwarnings("ignore")
 
 #lectura de df1 
-df1 = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/df1.csv'
+dfcompleto = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/df1.csv'
+df1 = pd.read_csv((dfcompleto), sep= ',')
+df1.head(5)
+df1 =df1.drop('Unnamed: 0', axis=1)
 
 # Separación de variables numéricas y categóricas
 dfnum = df1.iloc[:,[0,2,5,8,13,14,16,17,19,20,21,22,23,29]]
