@@ -257,3 +257,266 @@ metricas.boxplot(column=["Recall RL", "Recall AD", "Recall BA", "Recall XGB"], g
 plt.subplot(2,2,4)
 metricas.boxplot(column=["F1 RL", "F1 AD", "F1 BA", "F1 XGB"], grid=False)
 plt.show()
+
+#### Modelos con selección de variables por medio de SelectFromModel
+######################################################################
+
+
+
+# Función para obtener las variables importantes de cada modelo
+from sklearn.feature_selection import SelectFromModel
+def sel_variables(modelos,X,y,threshold):
+
+    var_names_ac=np.array([])
+    for modelo in modelos:
+        #modelo=modelos[i]
+        modelo.fit(X,y)
+        sel = SelectFromModel(modelo, prefit=True,threshold=threshold)
+        var_names= modelo.feature_names_in_[sel.get_support()]
+        var_names_ac=np.append(var_names_ac, var_names)
+        var_names_ac=np.unique(var_names_ac)
+
+    return var_names_ac
+
+    # Definición de variables
+modelos = list([regr_logbase0,clf0, ranfor0, XGBmodel0])
+var_names = sel_variables(modelos,Xe,y,threshold="2.5*mean")
+Xenew=Xe[var_names] ### Matriz con variables seleccionadas
+Xenew.info()
+
+###### Regresión logística  #########
+
+# Separación en conjuntos de entrenamiento y validación con 80% de muestras para entrenamiento
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=12)
+
+# creación del modelo
+# Crea el modelo
+regr_logbase1 = LogisticRegression(class_weight="balanced", random_state=12, max_iter=1000)
+
+# Calibra el modelo
+regr_logbase1.fit(X_train, y_train)
+
+#Predicciones sobre conjunto de entrenamiento
+y_pred = regr_logbase1.predict(X_train)
+#Exactitud de modelo
+print(f"Accuracy of the classifier is (train modelo 1): {accuracy_score(y_train, y_pred)}")
+
+print("-------------------------------------------------------")
+
+#Predicciones sobre el conjunto de test
+y_hat = regr_logbase1.predict(X_test)
+#Exactitud de modelo
+print(f"Accuracy of the classifier is (test modelo 1): {accuracy_score(y_test, y_hat)}")
+
+# Matriz de confusión datos de entrenamiento
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+fig = plt.figure(figsize=(20,10))
+trainbase = confusion_matrix(y_train, y_pred, labels=regr_logbase1.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix = trainbase, display_labels=regr_logbase1.classes_)
+disp.plot(cmap='CMRmap_r')
+plt.title('Matriz de confusión modelo base(train)')
+print(plt.show())
+
+# Matriz de confusión test
+fig = plt.figure(figsize=(20,10))
+testbase = confusion_matrix(y_test, y_hat, labels=regr_logbase1.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix = testbase, display_labels=regr_logbase1.classes_)
+disp.plot(cmap='CMRmap_r')
+plt.title('Matriz de confusión modelo base(test)')
+print(plt.show())
+
+# MÉTRICASS DE TRAIN Y TEST
+TP=trainbase[1,1]
+FP=trainbase[0,1]
+FN=trainbase[1,0]
+TN=trainbase[0,0]
+print(f"Accuracy of the classifier is (train) modelo base: {accuracy_score(y_train, y_pred)}")
+print(f'Precisión (train): {TP/(TP+FP)}')
+print(f'Recuperación (train): {TP/(TP+FN)}')
+precision=TP/(TP+FP)
+recall=TP/(TP+FN)
+print(f'F1-score (train): {(2*precision*recall)/(precision+recall)}')
+print(f'Especificidad (train): {TN/(FP+TN)}')
+print("-----------------------------------")
+TP=testbase[1,1]
+FP=testbase[0,1]
+FN=testbase[1,0]
+TN=testbase[0,0]
+print(f"Accuracy of the classifier is (test) modelo base: {accuracy_score(y_test, y_hat)}")
+print(f'Precisión (test): {TP/(TP+FP)}')
+print(f'Recuperación (test): {TP/(TP+FN)}')
+precision=TP/(TP+FP)
+recall=TP/(TP+FN)
+print(f'F1-score (test): {(2*precision*recall)/(precision+recall)}')
+print(f'Especificidad (test): {TN/(FP+TN)}')
+
+##################  Árbol de decisión   ###############
+###################################################
+
+# Separación en conjuntos de entrenamiento y validación con 80% de muestras para entrenamiento
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=12)
+
+# Creación del clasificador
+clf1 = tree.DecisionTreeClassifier(
+          criterion = 'gini',
+          random_state=25,
+          class_weight = 'balanced')
+
+clf1.fit(X_train, y_train)
+
+# Métricas de desempeño
+print ("Train - Accuracy :", metrics.accuracy_score(y_train, clf1.predict(X_train)))
+print ("Train - classification report:\n", metrics.classification_report(y_train, clf1.predict(X_train)))
+print ("Test - Accuracy :", metrics.accuracy_score(y_test, clf1.predict(X_test)))
+print ("Test - classification report :", metrics.classification_report(y_test, clf1.predict(X_test)))
+print('-----------------------------------------------------------------------')
+
+# Matriz de confusión
+cm1= confusion_matrix(y_test, clf1.predict(X_test))
+# Visualización de la matriz de confusión
+cm1_display = ConfusionMatrixDisplay(confusion_matrix = cm1)
+cm1_display.plot()
+plt.show()
+
+############################ Bosque Aleatorio ################
+##############################################################
+
+# Creación del clasificador
+ranfor1 = RandomForestClassifier(
+            criterion    = 'gini',
+            oob_score    = False,
+            n_jobs       = -1,
+            random_state = 25,
+            class_weight = 'balanced'
+         )
+ranfor1.fit(X_train, y_train)
+
+# Métricas de desempeño
+print ("Train - Accuracy :", metrics.accuracy_score(y_train, ranfor1.predict(X_train)))
+print ("Train - classification report:\n", metrics.classification_report(y_train, ranfor1.predict(X_train)))
+print ("Test - Accuracy :", metrics.accuracy_score(y_test, ranfor1.predict(X_test)))
+print ("Test - classification report :", metrics.classification_report(y_test, ranfor1.predict(X_test)))
+print('-----------------------------------------------------------------------')
+
+# Matriz de confusion
+cm1= confusion_matrix(y_test, ranfor1.predict(X_test))
+# Visualización de la matriz de confusion
+cm1_display = ConfusionMatrixDisplay(confusion_matrix = cm1)
+cm1_display.plot()
+plt.show()
+
+########################### XGB #######################
+########################################################
+
+#Definición del modelo
+XGBmodel1 = XGBClassifier(tree_method="hist",
+                          enable_categorical=True
+                        )
+XGBmodel1.fit(X_train, y_train)
+
+# Métricas de desempeño
+print ("Train - Accuracy :", metrics.accuracy_score(y_train, XGBmodel1.predict(X_train)))
+print ("Train - classification report:\n", metrics.classification_report(y_train, XGBmodel1.predict(X_train)))
+print ("Test - Accuracy :", metrics.accuracy_score(y_test, XGBmodel1.predict(X_test)))
+print ("Test - classification report :", metrics.classification_report(y_test, XGBmodel1.predict(X_test)))
+print('-----------------------------------------------------------------------')
+
+# Matriz de confusion
+cm1= confusion_matrix(y_test, XGBmodel1.predict(X_test))
+# Visualización de la matriz de confusion
+cm1_display = ConfusionMatrixDisplay(confusion_matrix = cm1)
+cm1_display.plot()
+plt.show()
+
+######################## Cross Validation########################
+##################################################################
+
+##### Evaluación regresión logística
+####################################
+log_model_base_result1 = cross_validation(regr_logbase1, Xenew, y, 15)
+print("Mean Training F1 Score Regresión logística: ", round(log_model_base_result1['Mean Training F1 Score'],4),
+      "\nMean Validation F1 Score Regresión logística: ", round(log_model_base_result1['Mean Validation F1 Score'],4),
+      "\nMean Training Precision Regresión logística: ", round(log_model_base_result1['Mean Training Precision'],4),
+      "\nMean Validation Precision Regresión logística: ", round(log_model_base_result1['Mean Validation Precision'],4),
+      "\nMean Training Recall Regresión logística: ", round(log_model_base_result1['Mean Training Recall'],4),
+      "\nMean Validation Recall Regresión logística: ", round(log_model_base_result1['Mean Validation Recall'],4),
+      "\nMean Training Accuracy Regresión logística: ", round(log_model_base_result1['Mean Training Accuracy'],4),
+      "\nMean Validation Accuracy Regresión logística: ", round(log_model_base_result1['Mean Validation Accuracy'],4))
+print("----------------------------------")
+
+
+#### Evaluación del árbol de decisión 1
+#######################################
+model_clf1 = cross_validation(clf1, Xenew, y, 15)
+print("Mean Training F1 Score Árbol de decisión 1: ", round(model_clf1['Mean Training F1 Score'],4),
+      "\nMean Validation F1 Score Árbol de decisión 1: ", round(model_clf1['Mean Validation F1 Score'],4),
+      "\nMean Training Precision Árbol de decisión 1: ", round(model_clf1['Mean Training Precision'],4),
+      "\nMean Validation Precision Árbol de decisión 1: ", round(model_clf1['Mean Validation Precision'],4),
+      "\nMean Training Recall Árbol de decisión 1: ", round(model_clf1['Mean Training Recall'],4),
+      "\nMean Validation Recall Árbol de decisión 1: ", round(model_clf1['Mean Validation Recall'],4),
+      "\nMean Training Accuracy Árbol de decisión 1: ", round(model_clf1['Mean Training Accuracy'],4),
+      "\nMean Validation Accuracy Árbol de decisión 1: ", round(model_clf1['Mean Validation Accuracy'],4))
+print("----------------------------------")
+
+
+#### Evaluación del bosque aleatorio 1
+######################################
+model_ranfor1 = cross_validation(ranfor1, Xenew, y, 15)
+print("Mean Training F1 Score Bosque aleatorio 1: ", round(model_ranfor1['Mean Training F1 Score'],4),
+      "\nMean Validation F1 Score Bosque aleatorio 1: ", round(model_ranfor1['Mean Validation F1 Score'],4),
+      "\nMean Training Precision Bosque aleatorio 1: ", round(model_ranfor1['Mean Training Precision'],4),
+      "\nMean Validation Precision Bosque aleatorio 1: ", round(model_ranfor1['Mean Validation Precision'],4),
+      "\nMean Training Recall Bosque aleatorio 1: ", round(model_ranfor1['Mean Training Recall'],4),
+      "\nMean Validation Recall Bosque aleatorio 1: ", round(model_ranfor1['Mean Validation Recall'],4),
+      "\nMean Training Accuracy Bosque aleatorio 1: ", round(model_ranfor1['Mean Training Accuracy'],4),
+      "\nMean Validation Accuracy Bosque aleatorio 1: ", round(model_ranfor1['Mean Validation Accuracy'],4))
+print("----------------------------------")
+
+
+#### Evaluación del XGB 1
+#########################
+model_XGB1 = cross_validation(XGBmodel1, Xenew, y, 15)
+print("Mean Training F1 Score XGB 1: ", round(model_XGB1['Mean Training F1 Score'],4),
+      "\nMean Validation F1 Score XGB 1: ", round(model_XGB1['Mean Validation F1 Score'],4),
+      "\nMean Training Precision XGB 1: ", round(model_XGB1['Mean Training Precision'],4),
+      "\nMean Validation Precision XGB 1: ", round(model_XGB1['Mean Validation Precision'],4),
+      "\nMean Training Recall XGB 1: ", round(model_XGB1['Mean Training Recall'],4),
+      "\nMean Validation Recall XGB 1: ", round(model_XGB1['Mean Validation Recall'],4),
+      "\nMean Training Accuracy XGB 1: ", round(model_XGB1['Mean Training Accuracy'],4),
+      "\nMean Validation Accuracy XGB 1: ", round(model_XGB1['Mean Validation Accuracy'],4))
+
+
+metricas = pd.DataFrame()
+metricas.insert(0,'Accuracy RL', log_model_base_result1['Validation Accuracy scores'])
+metricas.insert(1, 'Precision RL', log_model_base_result1['Validation Precision scores'])
+metricas.insert(2, 'Recall RL', log_model_base_result1['Validation Recall scores'])
+metricas.insert(3, 'F1 RL', log_model_base_result1['Validation F1 scores'])
+metricas.insert(4,'Accuracy AD', model_clf1['Validation Accuracy scores'])
+metricas.insert(5, 'Precision AD', model_clf1['Validation Precision scores'])
+metricas.insert(6, 'Recall AD', model_clf1['Validation Recall scores'])
+metricas.insert(7, 'F1 AD', model_clf1['Validation F1 scores'])
+metricas.insert(8,'Accuracy BA', model_ranfor1['Validation Accuracy scores'])
+metricas.insert(9, 'Precision BA', model_ranfor1['Validation Precision scores'])
+metricas.insert(10, 'Recall BA', model_ranfor1['Validation Recall scores'])
+metricas.insert(11, 'F1 BA', model_ranfor1['Validation F1 scores'])
+metricas.insert(12,'Accuracy XGB', model_XGB1['Validation Accuracy scores'])
+metricas.insert(13, 'Precision XGB', model_XGB1['Validation Precision scores'])
+metricas.insert(14, 'Recall XGB', model_XGB1['Validation Recall scores'])
+metricas.insert(15, 'F1 XGB', model_XGB1['Validation F1 scores'])
+
+plt.figure(figsize=(10, 10))
+
+plt.subplot(2,2,1)
+metricas.boxplot(column=["Accuracy RL", "Accuracy AD", "Accuracy BA", "Accuracy XGB"], grid=False)
+
+plt.subplot(2,2,2)
+metricas.boxplot(column=["Precision RL", "Precision AD", "Precision BA", "Precision XGB"], grid=False)
+
+plt.subplot(2,2,3)
+metricas.boxplot(column=["Recall RL", "Recall AD", "Recall BA", "Recall XGB"], grid=False)
+
+plt.subplot(2,2,4)
+metricas.boxplot(column=["F1 RL", "F1 AD", "F1 BA", "F1 XGB"], grid=False)
+plt.show()
+
+
