@@ -13,10 +13,13 @@ from sklearn import tree
 y = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/y.csv'
 y = pd.read_csv((y), sep= ',')
 y =y.drop('Unnamed: 0', axis=1)
+y.head()
 
 Xenew = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/Xenew.csv'
 Xenew = pd.read_csv((Xenew), sep= ',')
-Xenew =Xenew.drop('Unnamed: 0', axis=1)
+Xenew.head()
+Xenew =Xenew.drop('Unnamed: 0.1', axis=1)
+Xenew = Xenew.rename(columns={ 'Unnamed: 0': 'mean_time' })
 
 ## Cargar modelo y predecir
 X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
@@ -56,6 +59,7 @@ df1.head()
 
     
 df_final=pd.concat([df1,Pred],axis=1)
+df_final.to_csv("df_final.csv")
 
 # Convertir variable objetivo a un tipo de variable que permita construir los indicadores
 df_final['attrition'] = df_final['attrition'].astype('int64')
