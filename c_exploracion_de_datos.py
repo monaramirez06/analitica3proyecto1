@@ -1,9 +1,7 @@
-# Importar librerias necesarias para el procesamiento
+# Importar librerias
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from functools import reduce
-from sklearn.impute import SimpleImputer
 import seaborn as sns
 
 # Evitar salidas de Warnings

@@ -1,4 +1,4 @@
-#lectura base modelos
+# Importar librearias
 import pandas as pd
 import numpy as np
 from sklearn.compose import ColumnTransformer
@@ -8,11 +8,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier 
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 from sklearn import metrics
 from sklearn.tree import plot_tree
-%matplotlib inline
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from sklearn.model_selection import RandomizedSearchCV
@@ -20,6 +19,7 @@ from a_funciones import cross_validation
 from a_funciones import sel_variables
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import Lasso
+import joblib
 
 ff = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/df_real.csv'
 df_real = pd.read_csv((ff), sep= ',')
@@ -272,6 +272,8 @@ modelos = list([regr_logbase0,clf0, ranfor0, XGBmodel0])
 var_names = sel_variables(modelos,Xe,y,threshold="2.5*mean")
 Xenew=Xe[var_names] ### Matriz con variables seleccionadas
 Xenew.info()
+Xenew.to_csv("Xenew.csv")
+y.to_csv("y.csv")
 
 ###### Regresión logística  #########
 
@@ -740,3 +742,118 @@ metricas.boxplot(column=["Recall RL", "Recall AD", "Recall BA", "Recall XGB"], g
 plt.subplot(2,2,4)
 metricas.boxplot(column=["F1 RL", "F1 AD", "F1 BA", "F1 XGB"], grid=False)
 plt.show()
+
+### SELECCIÓN DEL MODELO Y OPTIMIZACIÓN DE HIPERPARÁMETROS####
+#---------------------------------------------------------------#
+metricas = pd.DataFrame()
+metricas.insert(0,'Recall AD', model_clf1['Validation Recall scores'])
+metricas.insert(0,'Recall BA', model_ranfor1['Validation Recall scores'])
+metricas.insert(0,'Accuracy AD', model_clf1['Validation Accuracy scores'])
+metricas.insert(0,'Accuracy BA', model_ranfor1['Validation Accuracy scores'])
+
+metricas.boxplot(column=["Recall AD", "Recall BA", "Accuracy AD", "Accuracy BA"], grid=False)
+
+# Optimización de hiperparámetros del modelo seleccionado : árbol de decisión
+
+# Definición de cuadricula de hiperparámetros
+parameters = {'max_depth': [16,18,20,22,24,26,28,30],
+              'max_leaf_nodes': [150,200,250,300,350],
+              'max_features':[35,'auto','sqrt','log2','none']}
+
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
+
+rand_ad = RandomizedSearchCV(estimator=clf1, param_distributions=parameters, n_iter=20, scoring='recall', cv=20, verbose=False, random_state=1)
+
+rand_ad.fit(X_train, y_train)
+
+print('Best Params: ', rand_ad.best_params_)
+print('Best Score: ', rand_ad.best_score_)
+print('-----------------------------------------------------------------------')
+
+# Aplicación de hiperparámetros
+clff = tree.DecisionTreeClassifier(
+          criterion = 'gini',
+          random_state=25,
+          max_depth = 30,
+          max_leaf_nodes = 350,
+          max_features = 'auto',
+          class_weight = 'balanced')
+
+clff.fit(X_train, y_train)
+
+# Métricas del árbol
+print ("Train - Accuracy :", metrics.accuracy_score(y_train, clff.predict(X_train)))
+print ("Train - classification report:\n", metrics.classification_report(y_train, clff.predict(X_train)))
+print ("Test - Accuracy :", metrics.accuracy_score(y_test, clff.predict(X_test)))
+print ("Test - classification report :", metrics.classification_report(y_test, clff.predict(X_test)))
+print ("Train - Recall :", metrics.recall_score(y_train, clff.predict(X_train)))
+print ("Train - classification report:\n", metrics.classification_report(y_train, clff.predict(X_train)))
+print ("Test - Recall :", metrics.recall_score(y_test, clff.predict(X_test)))
+print ("Test - classification report :", metrics.classification_report(y_test, clff.predict(X_test)))
+print('-----------------------------------------------------------------------')
+
+# Características del árbol
+print(f"Profundidad del árbol: {clff.get_depth()}")
+print(f"Número de nodos terminales: {clff.get_n_leaves()}")
+print('-----------------------------------------------------------------------')
+
+# Matriz de confusión
+cm1= confusion_matrix(y_test, clff.predict(X_test))
+# Visualización de la matriz de confusion
+cm1_display = ConfusionMatrixDisplay(confusion_matrix = cm1)
+cm1_display.plot()
+plt.show()
+
+# Visualización del árbol
+fig, ax = plt.subplots(figsize=(22, 20))
+plot = plot_tree(
+            decision_tree = clff,
+            feature_names = Xenew.columns,
+            class_names   = ['False', 'True'],
+            filled        = True,
+            impurity      = False,
+            fontsize      = 10,
+            precision     = 2,
+            ax            = ax
+       )
+
+# Evaluación del árbol de decisión
+model_clf = cross_validation(clff, Xenew, y, 100)
+print("Mean Training F1 Score Árbol de decisión 1: ", round(model_clf['Mean Training F1 Score'],4),
+      "\nMean Validation F1 Score Árbol de decisión 1: ", round(model_clf['Mean Validation F1 Score'],4),
+      "\nMean Training Precision Árbol de decisión 1: ", round(model_clf['Mean Training Precision'],4),
+      "\nMean Validation Precision Árbol de decisión 1: ", round(model_clf['Mean Validation Precision'],4),
+      "\nMean Training Recall Árbol de decisión 1: ", round(model_clf['Mean Training Recall'],4),
+      "\nMean Validation Recall Árbol de decisión 1: ", round(model_clf['Mean Validation Recall'],4),
+      "\nMean Training Accuracy Árbol de decisión 1: ", round(model_clf['Mean Training Accuracy'],4),
+      "\nMean Validation Accuracy Árbol de decisión 1: ", round(model_clf['Mean Validation Accuracy'],4))
+
+# Visualización de métricas
+metricas = pd.DataFrame()
+metricas.insert(0,'Accuracy train', model_clf['Training Accuracy scores'])
+metricas.insert(1, 'Precision train', model_clf['Training Precision scores'])
+metricas.insert(2, 'Recall train', model_clf['Training Recall scores'])
+metricas.insert(3, 'F1 train', model_clf['Training F1 scores'])
+metricas.insert(4,'Accuracy test', model_clf['Validation Accuracy scores'])
+metricas.insert(5, 'Precision test', model_clf['Validation Precision scores'])
+metricas.insert(6, 'Recall test', model_clf['Validation Recall scores'])
+metricas.insert(7, 'F1 test', model_clf['Validation F1 scores'])
+
+plt.figure(figsize=(8, 8))
+
+plt.subplot(2,2,1)
+metricas.boxplot(column=["Recall train", "Recall test"], grid=False)
+
+plt.subplot(2,2,2)
+metricas.boxplot(column=["F1 train", "F1 test"], grid=False)
+
+plt.subplot(2,2,3)
+metricas.boxplot(column=["Precision train", "Precision test"], grid=False)
+
+plt.subplot(2,2,4)
+metricas.boxplot(column=["Accuracy train", "Accuracy test"], grid=False)
+plt.show()
+
+# Guardar modelo
+joblib.dump(clff, "clff_final.pkl")
+clff_final = joblib.load("clff_final.pkl")
