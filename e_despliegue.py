@@ -1,25 +1,13 @@
 # Importar librearias
 import pandas as pd
 import numpy as np
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
+from sklearn.tree import plot_tree
+import joblib
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
-from sklearn import metrics
-from sklearn.tree import plot_tree
-from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
-from sklearn.model_selection import RandomizedSearchCV
-from a_funciones import cross_validation
-from a_funciones import sel_variables
-from sklearn.feature_selection import SelectFromModel
-from sklearn.linear_model import Lasso
-import joblib
 
 ### Cargar datos
 y = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/y.csv'
@@ -29,7 +17,17 @@ Xenew = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/mai
 Xenew = pd.read_csv((Xenew), sep= ',')
 
 ## Cargar modelo y predecir
-clff = joblib.load("clff_final.pkl")
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
+clff = tree.DecisionTreeClassifier(
+          criterion = 'gini',
+          random_state=25,
+          max_depth = 30,
+          max_leaf_nodes = 350,
+          max_features = 'auto',
+          class_weight = 'balanced')
+
+clff.fit(X_train, y_train)
+#clff = joblib.load("clff_final.pkl")
 
 # Importancia de variables para plan de acción
 pd.set_option('display.max_rows', 100)
