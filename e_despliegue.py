@@ -12,9 +12,11 @@ from sklearn import tree
 ### Cargar datos
 y = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/y.csv'
 y = pd.read_csv((y), sep= ',')
+y =y.drop('Unnamed: 0', axis=1)
 
-Xenew = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/y.csv'
+Xenew = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/Xenew.csv'
 Xenew = pd.read_csv((Xenew), sep= ',')
+Xenew =Xenew.drop('Unnamed: 0', axis=1)
 
 ## Cargar modelo y predecir
 X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
@@ -45,10 +47,12 @@ plt.barh(importancia.variable, importancia.peso)
 plt.show()
 
 # Predicciones
-Pred=pd.DataFrame(clff.predict(Xenew), columns=['Predicciones retiros'])
+Pred=pd.DataFrame(clff.predict(Xenew), columns=['attrition pred'])
 
 ff1 = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/df1.csv'
 df1 = pd.read_csv((ff1), sep= ',')
+df1 =df1.drop('Unnamed: 0', axis=1)
+df1.head()
 
     
 df_final=pd.concat([df1,Pred],axis=1)
@@ -60,29 +64,29 @@ df_final.dtypes
 # Indicadores de rotación por área - departamento con predicciones
 areas = df_final.groupby(['department'])[['attrition pred']].sum()
 areas1 = df_final.groupby(['department'])[['attrition pred']].count()
-round(areas/areas1*100,2)
+print(round(areas/areas1*100,2))
 
 # Indicadores de rotación por área - departamento real
 areas = df_final.groupby(['department'])[['attrition']].sum()
 areas1 = df_final.groupby(['department'])[['attrition']].count()
-round(areas/areas1*100,2)
+print(round(areas/areas1*100,2))
 
 # Indicadores de rotación por cargo - rol con predicciones
 cargos = df_final.groupby(['jobrole'])[['attrition pred']].sum()
 cargos1 = df_final.groupby(['jobrole'])[['attrition pred']].count()
-round(cargos/cargos1*100,2)
+print(round(cargos/cargos1*100,2))
 
 # Indicadores de rotación por cargo - rol real
 cargos = df_final.groupby(['jobrole'])[['attrition']].sum()
 cargos1 = df_final.groupby(['jobrole'])[['attrition']].count()
-round(cargos/cargos1*100,2)
+print(round(cargos/cargos1*100,2))
 
 # Indicadores de rotación por cargo - rol real
 cargos = df_final.groupby(['department','jobrole'])[['attrition']].sum()
 cargos1 = df_final.groupby(['department','jobrole'])[['attrition']].count()
-round(cargos/cargos1*100,2)
+print(round(cargos/cargos1*100,2))
     
 # Indicadores de rotación por cargo - rol real
 cargos = df_final.groupby(['department','jobrole'])[['attrition pred']].sum()
 cargos1 = df_final.groupby(['department','jobrole'])[['attrition pred']].count()
-round(cargos/cargos1*100,2)
+print(round(cargos/cargos1*100,2))

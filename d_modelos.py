@@ -853,7 +853,3 @@ metricas.boxplot(column=["Precision train", "Precision test"], grid=False)
 plt.subplot(2,2,4)
 metricas.boxplot(column=["Accuracy train", "Accuracy test"], grid=False)
 plt.show()
-
-# Guardar modelo
-joblib.dump(clff, "clff_final.pkl")
-clff_final = joblib.load("clff_final.pkl")

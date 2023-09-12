@@ -428,6 +428,9 @@ df1['attrition'] = df1['attrition'].map( {'Yes':'1', 'No':'0'} ).fillna(df1['att
 atr = df1['attrition']
 df1.head(3)
 
+# Exportar base de datos
+df1.to_csv("df1.csv")
+
 # Se hace copia al data set anterior
 df2=df1.copy()
 
