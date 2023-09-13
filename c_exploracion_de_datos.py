@@ -455,13 +455,13 @@ df2.drop("over18", axis = 1, inplace = True)
 df2.drop("standardhours", axis = 1, inplace = True)
 
 # Se convierten las variables a dummies
-df2=pd.get_dummies(df2)
-df2.head(2)
+#df2=pd.get_dummies(df2)
+#df2.head(2)
 
 # Se vuelve a poner nuestra variable objetivo
-df_real = pd.concat([atr,df2], axis=1)
-df_real.attrition = df_real['attrition'].astype(int)
-df_real.info()
+#df_real = pd.concat([atr,df2], axis=1)
+#df_real.attrition = df_real['attrition'].astype(int)
+#df_real.info()
 
 # Exportar base de datos 
-df_real.to_csv("df_real.csv")
+df2.to_csv("df_real.csv")
