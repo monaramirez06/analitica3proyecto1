@@ -27,19 +27,20 @@ df_real =df_real.drop('Unnamed: 0', axis=1)
 
 # Separacion de variables
 y = df_real['attrition'].astype(int)
-X = df_real.drop(["attrition"], axis = 1)
+X1 = df_real.drop(["attrition"], axis = 1)
 
-# Dummies y numéricas
-X=pd.get_dummies(X)
-X.head(2)
-
-#Separación de caracteristicas númericas y categóricas
-numeric_columns=list(X.select_dtypes('float64').columns)
+# Convertir a dummies
+list_dummies=['businesstravel','department','educationfield','gender','jobrole','maritalstatus']
+df_dummies=pd.get_dummies(X1,columns=list_dummies)
+df_dummies.info()
 
 #Estandarización de variables númericas
-pipeline=ColumnTransformer([('num',StandardScaler(),numeric_columns)], remainder='passthrough')
-X1 = pipeline.fit_transform(X)
-Xe = pd.DataFrame(X1, index = X.index, columns=X.columns)
+X1= df_dummies.iloc[:,0:19]
+scaler=StandardScaler()
+scaler.fit(X1)
+X2=scaler.transform(X1)
+X=pd.DataFrame(X2,columns=X1.columns)
+Xe =pd.concat([X, df_dummies.iloc[:,19:45]], axis=1)
 
 ############## MODELOS SIN SELECCION DE VARIABLES
 #################################################
@@ -273,7 +274,7 @@ plt.show()
 # Función para obtener las variables importantes de cada modelo
     # Definición de variables
 modelos = list([regr_logbase0,clf0, ranfor0, XGBmodel0])
-var_names = sel_variables(modelos,Xe,y,threshold="2.5*mean")
+var_names = sel_variables(modelos,Xe,y,threshold="2*mean")
 Xenew=Xe[var_names] ### Matriz con variables seleccionadas
 Xenew.info()
 Xenew.to_csv("Xenew.csv")
@@ -764,7 +765,7 @@ parameters = {'max_depth': [16,18,20,22,24,26,28,30],
               'max_leaf_nodes': [150,200,250,300,350],
               'max_features':[35,'auto','sqrt','log2','none']}
 
-X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=12)
 
 rand_ad = RandomizedSearchCV(estimator=clf1, param_distributions=parameters, n_iter=20, scoring='recall', cv=20, verbose=False, random_state=1)
 
