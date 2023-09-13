@@ -444,24 +444,11 @@ df1.to_csv("df1.csv")
 # Se hace copia al data set anterior
 df2=df1.copy()
 
-# Eliminación de columna atrition
-# esta sera anexada luego, para poder hacer las demas variables dummies
-df2.drop("attrition", axis = 1, inplace = True)
-
 # eliminar variables que no representan importancia en el data frame
 df2.drop("employeecount", axis = 1, inplace = True)
 df2.drop("employeeid", axis = 1, inplace = True)
 df2.drop("over18", axis = 1, inplace = True)
 df2.drop("standardhours", axis = 1, inplace = True)
-
-# Se convierten las variables a dummies
-#df2=pd.get_dummies(df2)
-#df2.head(2)
-
-# Se vuelve a poner nuestra variable objetivo
-#df_real = pd.concat([atr,df2], axis=1)
-#df_real.attrition = df_real['attrition'].astype(int)
-#df_real.info()
 
 # Exportar base de datos 
 df2.to_csv("df_real.csv")

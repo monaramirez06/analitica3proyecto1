@@ -23,10 +23,15 @@ import joblib
 
 ff = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/df_real.csv'
 df_real = pd.read_csv((ff), sep= ',')
+df_real =df_real.drop('Unnamed: 0', axis=1)
 
 # Separacion de variables
-y = df_real.attrition
+y = df_real['attrition'].astype(int)
 X = df_real.drop(["attrition"], axis = 1)
+
+# Se convierten las variables a dummies
+X=pd.get_dummies(X)
+X.head(2)
 
 #Separación de caracteristicas númericas y categóricas
 numeric_columns=list(X.select_dtypes('float64').columns)
