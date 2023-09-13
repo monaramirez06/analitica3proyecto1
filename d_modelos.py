@@ -29,7 +29,7 @@ df_real =df_real.drop('Unnamed: 0', axis=1)
 y = df_real['attrition'].astype(int)
 X = df_real.drop(["attrition"], axis = 1)
 
-# Se convierten las variables a dummies
+# Dummies y numéricas
 X=pd.get_dummies(X)
 X.head(2)
 
@@ -40,7 +40,6 @@ numeric_columns=list(X.select_dtypes('float64').columns)
 pipeline=ColumnTransformer([('num',StandardScaler(),numeric_columns)], remainder='passthrough')
 X1 = pipeline.fit_transform(X)
 Xe = pd.DataFrame(X1, index = X.index, columns=X.columns)
-
 
 ############## MODELOS SIN SELECCION DE VARIABLES
 #################################################
