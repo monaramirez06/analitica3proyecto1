@@ -105,15 +105,6 @@ df.shape
 # Categoria y cantidad de datos no nulos por varible de información general
 df.info()
 
-# Conversión de variables categóricas que aparentemente son numéricas
-df.education = df['education'].astype(str)
-df.joblevel = df['joblevel'].astype(str)
-df.stockoptionlevel = df['stockoptionlevel'].astype(str)
-df.jobinvolvement = df['jobinvolvement'].astype(str)
-df.performancerating = df['performancerating'].astype(str)
-
-df.info()
-
 # Variables cualitativas nominales
 print("Attrition: ", df['attrition'].unique())
 print("Businesstravel: ", df['businesstravel'].unique())
@@ -170,11 +161,6 @@ df1["worklifebalance"] = imp_cat.fit_transform(df1["worklifebalance"].values.res
 print(df1.isnull().sum())
 
 df1.head(5)
-
-# Cambiar tipo de variables
-df1.environmentsatisfaction = df1['environmentsatisfaction'].astype(str)
-df1.jobsatisfaction = df1['jobsatisfaction'].astype(str)
-df1.worklifebalance = df1['worklifebalance'].astype(str)
 
 # Exportar base de datos final
 df1.to_csv("df1.csv")

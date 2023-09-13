@@ -14,6 +14,16 @@ df1 = pd.read_csv((dfcompleto), sep= ',')
 df1.head(5)
 df1 =df1.drop('Unnamed: 0', axis=1)
 
+# Conversión de variables categóricas que aparentemente son numéricas
+df1.education = df1['education'].astype(str)
+df1.joblevel = df1['joblevel'].astype(str)
+df1.stockoptionlevel = df1['stockoptionlevel'].astype(str)
+df1.jobinvolvement = df1['jobinvolvement'].astype(str)
+df1.performancerating = df1['performancerating'].astype(str)
+df1.environmentsatisfaction = df1['environmentsatisfaction'].astype(str)
+df1.jobsatisfaction = df1['jobsatisfaction'].astype(str)
+df1.worklifebalance = df1['worklifebalance'].astype(str)
+
 # Separación de variables numéricas y categóricas
 dfnum = df1.iloc[:,[0,2,5,8,13,14,16,17,19,20,21,22,23,29]]
 dfcat = df1.iloc[:,[1,3,4,6,7,9,10,11,12,15,18,24,25,26,27,28]]
