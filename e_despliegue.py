@@ -18,11 +18,10 @@ y.head()
 Xenew = 'https://raw.githubusercontent.com/monaramirez06/analitica3proyecto1/main/Xenew.csv'
 Xenew = pd.read_csv((Xenew), sep= ',')
 Xenew.head()
-Xenew =Xenew.drop('Unnamed: 0.1', axis=1)
-Xenew = Xenew.rename(columns={ 'Unnamed: 0': 'mean_time' })
+Xenew =Xenew.drop('Unnamed: 0', axis=1)
 
 ## Cargar modelo y predecir
-X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=25)
+X_train, X_test, y_train, y_test = train_test_split(Xenew, y, test_size=0.2, random_state=12)
 clff = tree.DecisionTreeClassifier(
           criterion = 'gini',
           random_state=25,
